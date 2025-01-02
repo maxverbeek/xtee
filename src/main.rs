@@ -23,6 +23,13 @@ struct Args {
 
     #[arg(short, long, help = "Match this regex on the STDIN")]
     pattern: String,
+
+    #[arg(
+        short,
+        long,
+        help = "Instead of passing it as STDIN, pass the match as last argument."
+    )]
+    xargs: bool,
 }
 
 #[tokio::main]
@@ -42,7 +49,7 @@ async fn main() -> Result<(), ()> {
         for cmd in commands {
             let msg = msg.clone();
             children.spawn(async move {
-                runcommand(&cmd, msg.as_ref()).await;
+                runcommand(&cmd, msg.as_ref(), cli.xargs).await;
             });
         }
     }
