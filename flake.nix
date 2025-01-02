@@ -25,6 +25,24 @@
           name = "devshell";
           buildInputs = [ toolchain.default ];
         };
+
+        overlays.default = final: prev: {
+          xtee = final.rustPlatform.buildRustPackage {
+            pname = "xtee";
+            version = "0.1.0";
+            src = ./.;
+
+            cargoLock = {
+              lockFile = ./Cargo.lock;
+            };
+          };
+        };
+
+        packages.default =
+          (import nixpkgs {
+            inherit system;
+            overlays = [ self.overlays.${system}.default ];
+          }).xtee;
       }
     );
 }
