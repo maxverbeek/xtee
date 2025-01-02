@@ -5,10 +5,10 @@ A utility to filter input via a regular expression, and pass this input into a p
 Intended use is to use this in combination with `git push` as follows:
 
 ```sh
-git push -o merge_request.create &2>1 | xtee -p https://\S+ -e wl-copy &1>2
+git push -o merge_request.create 2>&1 | xtee -p "https://\\S+" -e wl-copy >&2
 ```
 
-Which should pass the stderr of git push to the stdin of xtree. Xtree will
+Which should pass the stderr of git push to the stdin of xtee. xtee will
 filter out any URLs via the https regex, and forward it to wl-copy which copies
 it to the clipboard. The output of git push usually includes a merge request
 URL if you create one via the push flags. I want to grab these URLs as this
