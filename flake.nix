@@ -19,6 +19,16 @@
         pkgs = import nixpkgs { inherit system overlays; };
 
         toolchain = pkgs.rust-bin.stable.latest;
+
+        xtee = pkgs.rustPlatform.buildRustPackage {
+          pname = "xtee";
+          version = "0.1.0";
+          src = ./.;
+
+          cargoLock = {
+            lockFile = ./Cargo.lock;
+          };
+        };
       in
       {
         devShell = pkgs.mkShell {
@@ -26,23 +36,10 @@
           buildInputs = [ toolchain.default ];
         };
 
-        overlays.default = final: prev: {
-          xtee = final.rustPlatform.buildRustPackage {
-            pname = "xtee";
-            version = "0.1.0";
-            src = ./.;
+        packages.default = xtee;
 
-            cargoLock = {
-              lockFile = ./Cargo.lock;
-            };
-          };
-        };
-
-        packages.default =
-          (import nixpkgs {
-            inherit system;
-            overlays = [ self.overlays.${system}.default ];
-          }).xtee;
+        # buildRustPackage runs `cargo test` in its checkPhase
+        checks.default = xtee;
       }
     );
 }
