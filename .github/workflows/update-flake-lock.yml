@@ -1,7 +1,7 @@
 name: update-flake-lock
 on:
   schedule:
-    - cron: "0 1 * * 0" # Sunday, before nixconfig's Monday lock update
+    - cron: "23 1 * * 0" # Sunday, before nixconfig's Monday lock update
   workflow_dispatch:
 permissions:
   contents: write
